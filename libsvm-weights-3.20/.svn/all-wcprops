@@ -1,0 +1,89 @@
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/desy/susy_svm/!svn/ver/16/trunk/svm_interface/libsvm-weights-3.20
+END
+svm-train.c
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/desy/susy_svm/!svn/ver/16/trunk/svm_interface/libsvm-weights-3.20/svm-train.c
+END
+svm.def
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/desy/susy_svm/!svn/ver/16/trunk/svm_interface/libsvm-weights-3.20/svm.def
+END
+README.weight
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/desy/susy_svm/!svn/ver/16/trunk/svm_interface/libsvm-weights-3.20/README.weight
+END
+svm.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/desy/susy_svm/!svn/ver/16/trunk/svm_interface/libsvm-weights-3.20/svm.cpp
+END
+COPYRIGHT
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/desy/susy_svm/!svn/ver/16/trunk/svm_interface/libsvm-weights-3.20/COPYRIGHT
+END
+Makefile.win
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/desy/susy_svm/!svn/ver/16/trunk/svm_interface/libsvm-weights-3.20/Makefile.win
+END
+FAQ.html
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/desy/susy_svm/!svn/ver/16/trunk/svm_interface/libsvm-weights-3.20/FAQ.html
+END
+heart_scale
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/desy/susy_svm/!svn/ver/16/trunk/svm_interface/libsvm-weights-3.20/heart_scale
+END
+heart_scale.wgt
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/desy/susy_svm/!svn/ver/16/trunk/svm_interface/libsvm-weights-3.20/heart_scale.wgt
+END
+svm.h
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/desy/susy_svm/!svn/ver/16/trunk/svm_interface/libsvm-weights-3.20/svm.h
+END
+svm-scale.c
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/desy/susy_svm/!svn/ver/16/trunk/svm_interface/libsvm-weights-3.20/svm-scale.c
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/desy/susy_svm/!svn/ver/16/trunk/svm_interface/libsvm-weights-3.20/README
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/desy/susy_svm/!svn/ver/16/trunk/svm_interface/libsvm-weights-3.20/Makefile
+END
+svm-predict.c
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/desy/susy_svm/!svn/ver/16/trunk/svm_interface/libsvm-weights-3.20/svm-predict.c
+END
