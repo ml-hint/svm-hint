@@ -1,0 +1,12 @@
+The following configurations for the TMVA - BDT studies are used for
+the comparison studies:
+factory->BookMethod( TMVA::Types::kBDT, "BDT",
+//Set 1:
+"..:NTrees=70:MinNodeSize=0.01%:MaxDepth=3:BoostType=AdaBoost:AdaBoostBeta=0.5:SeparationType=GiniIndex:nCuts=-1"
+//Set 2:
+"..:NTrees=100:MinNodeSize=0.02%:MaxDepth=-1:BoostType=AdaBoost:AdaBoostBeta=0.5:SeparationType=GiniIndex:nCuts=-1"
+//Set 3:
+"..:NTrees=250:MinNodeSize=0.01%:MaxDepth=-1:BoostType=AdaBoost:AdaBoostBeta=0.5:SeparationType=GiniIndex:nCuts=-1"
+//Set 4:
+"..:NTrees=100:MinNodeSize=0.005%:MaxDepth=3:BoostType=AdaBoost:AdaBoostBeta=0.4:SeparationType=GiniIndex:nCuts=-1" 
+);
