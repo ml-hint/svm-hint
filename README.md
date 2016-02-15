@@ -8,13 +8,15 @@ An example code is given in the 'svm_hint_tutorial.cpp'. The example code gives 
 
 Right now SVM-HINT only supports two-class problems with C penalty parameter. Since it is an abstract factory, other SVM algorithms included in the LibSVM can be implemented easily. 
 
-SVM-HINT is described in “our yet to be published paper”
+SVM-HINT's performance and usage scenarios are discussed in [4].
 
 [1] http://www.csie.ntu.edu.tw/~cjlin/libsvm/
 
 [2] https://root.cern.ch/
 
 [3] https://www.scientificlinux.org
+
+[4] http://arxiv.org/pdf/1601.02809v1.pdf
 
 **Installation:**
 Make sure that the ROOT path is set correctly:
