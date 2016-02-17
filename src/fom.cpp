@@ -41,6 +41,34 @@ TGraph* fom::ROC(TH1D* sig, TH1D* bkg){
   TGraph *roc = new TGraph (max_bin, S, B); 
   return roc;
 }
+double fom::getSignificance(TH1D* sig, TH1D* bkg, int cut){
+  this->setSignal(sig->Integral(cut,sig->GetSize()-1)); 
+  this->setBackground(bkg->Integral(cut,bkg->GetSize()-1));
+  double sign = this->getSignificance(fom::asimov); //AsimovZ is better  
+  cout << " On bin " << cut   << 
+    " significance is "           << sign <<  endl;
+  return sign;
+}
+double fom::getSignificance(const vector<vector<double> >& sig, const vector<vector<double> >& bkg, int bin){
+ const  int max_ind     = 40;
+  double cumuS          = 0., cumuB          = 0.;
+  double sign           = 0., max_sign       = -1.;
+  int ind = bin;
+  for (auto it = sig.begin(); it != sig.end();it++ ){
+    if(it->at(0) >((double)ind+1.0)/(double)max_ind){
+      cumuS+=it->at(1);
+    }
+  }
+  for (auto it =bkg.begin();it!=bkg.end();it++){
+    if(it->at(0) >((double)ind+1.0)/(double)max_ind){
+      cumuB+=it->at(1);
+    }
+  }    
+  this->setSignal(cumuS); this->setBackground(cumuB);
+  sign = this->getSignificance(fom::asimov); //AsimovZ is better
+  //cout  cout << " Significance obtained on the bin " << bin + 1 << " is " << sign << "." << endl;
+  return sign;
+}
 double fom::maxSignificance(TH1D* sig, TH1D* bkg, bool info, double min_signal, TH1D* cuteff){
   bool docuteff = false;
   if(cuteff) docuteff = true; 

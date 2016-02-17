@@ -192,7 +192,7 @@ double csvc_interface::parameter_comparison(const vvvector<double>& vSig, const 
       cout << " Test sample: " ;
       accuracy->at(ind) = FOM.maxSignificance(vSig[ind], vBkg[ind], max_cut_bin->at(ind), sig_error, false, min_signal);  
       cout << " Train sample: " ;
-      train_accur = FOM.maxSignificance(VarvSig[ind], VarvBkg[ind], dummy_bin , dummy_error, false, min_signal);
+      train_accur = FOM.getSignificance(VarvSig[ind], VarvBkg[ind], max_cut_bin->at(ind));
     }
     accuracy->at(ind) *= (1. - fabs(accuracy->at(ind) - train_accur)/(accuracy->at(ind) + train_accur));
   }

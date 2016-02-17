@@ -40,6 +40,7 @@ protected:
   static const int disc_nbin = 40;
   int max_iter;
   bool precise_scan;
+  bool doprobabilitycalc;
   unsigned nsamp_tot, nsamp_train, nsamp_test, nsamp_eval, nbkg_tot, nsig_tot , nbkg_train, nbkg_test, nsig_train, nsig_test, nfeature;
   double nsig_test_w, nbkg_test_w, systematical_unc;
   vvector<double> overall_accuracy;   
@@ -58,7 +59,7 @@ protected:
     y2                  = 0;
     systematical_unc    = 0.25;
  };
-  void do_precise_scan(bool precise = true) {precise_scan = precise;};
+  void do_precise_scan    (bool precise  = true) {precise_scan = precise;};
   unsigned svm_node_max;
   svm_problem sample_train;
   svm_problem sample_test;
@@ -80,6 +81,7 @@ public:
   TH1D* disc_S;
   TH1D* disc_B;
   TH1D* cuteff;
+  virtual void do_probability_calc    (bool probcalc = true) {doprobabilitycalc = probcalc;};
   virtual void set_sample             (const svm_container&, samp_type) = 0;
   virtual bool split_set_sample       (const svm_container &svm) = 0;  
   virtual void set_systematical_unc   (double sys_unc = 0.25) {systematical_unc = sys_unc;}
@@ -130,12 +132,16 @@ private:
     given_svm->set_sample(eval,svm_interface::EVALUATE);
   };
   void set_filename(TString name){filename=name;}
-  double Scan_parameters(){
+  void Scan_parameters(){
     given_svm->parameter_scan(0.0001, 0.); 
     std:: cout << given_svm->highest_accur_C << " "<<given_svm->highest_accur_gamma << std::endl;
     this->Obtain_probabilities(given_svm->highest_accur_C,given_svm->highest_accur_gamma);
   }
-  bool Obtain_probabilities(double C, double g) const{
+  void Do_probability_calc(){
+    given_svm->do_probability_calc();
+    given_svm->set_parameters();
+  }
+  void Obtain_probabilities(double C, double g) const{
     given_svm->obtain_probabilities((double)C,(double)g,iEval_bkg);
     TFile *f = new TFile(filename,"RECREATE");
     given_svm->disc_S->Write();
@@ -144,7 +150,7 @@ private:
     given_svm->roc->Write();
     f->Close();
   }
-  bool Obtain_probabilities(double C, double g, double high_cut){
+  void Obtain_probabilities(double C, double g, double high_cut){
     given_svm->highest_accur_cut = high_cut; 
     Obtain_probabilities((double)C, (double)g);
   }

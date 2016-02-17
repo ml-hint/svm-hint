@@ -34,7 +34,6 @@ private:
   std::vector<int   >* max_cut_bin;
   constexpr static double kBkg = 1.0;
   constexpr static double kSig = -1.0;
-  bool doprobabilitycalc;
 public:
   virtual void set_sample          (const svm_container&, samp_type);
   virtual void obtain_probabilities(double,double,int);

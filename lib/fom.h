@@ -28,6 +28,8 @@ public:
   double maxSignificance(TH1D* sig, TH1D* bkg, bool info, double min_signal = 3., TH1D* cuteff = 0);
   float  maxSignificance(TH1F* sig, TH1F* bkg, bool info, float  min_signal = 3., TH1F* cuteff = 0);
   double maxSignificance(const std::vector<std::vector<double> >& sig, const std::vector<std::vector<double> >& bkg,int &bin, double& error,  bool info = true, double min_signal = 3., TH1D* cuteff = 0);
+  double getSignificance(const std::vector<std::vector<double> >& sig, const std::vector<std::vector<double> >& bkg,int bin);
+  double getSignificance(TH1D* sig, TH1D* bkg, int cut);
   double unbinned_maxSignificance(const std::vector<std::vector<double> >& sig, const std::vector<std::vector<double> >& bkg,int &bin, double& error,  bool info = true, double min_signal = 3., TH1D* cuteff = 0);
   double getSignificance(fom_type f_type) {if (f_type == asimov) asimovZ();
     else if(f_type == stop) Stop();
