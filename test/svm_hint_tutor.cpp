@@ -93,14 +93,19 @@ int main(){
     " total event number in the svm evaluation container: " << svm_eval.svm_cont->size() << std::endl;
   svm_interface * csvc = new csvc_interface(nsamp_tot,nbkg_tot,nsig_tot);
   svm_analyze stop;
-  std::cout << svm.weights->size() <<std::endl;
   stop.set_filename("tutorial.root");
   stop.set_svm_interface(csvc);
   stop.setup_svm(svm);
   stop.set_eval(svm_eval,nbkg_eval);
-  timer prob;
-  //  stop.Obtain_probabilities(1, 1000.,0.575);// c , gamma
-  prob.stop("svm training and test takes: ");
+  /* timer prob;
+   stop.Obtain_probabilities(1, 1000.,0.575);// c , gamma
+   prob.stop("svm training and test takes: ");*/
+  //Enable probabilistic output
+  stop.Do_probability_calc();
+  //set the systematical unc
+  stop.Set_systematical_unc(0.25);
+  //set # of threads
+  stop.Set_omp_threads(8);
   timer tmain; 
   tmain.start();
   stop.Scan_parameters();

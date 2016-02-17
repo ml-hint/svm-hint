@@ -107,9 +107,8 @@ private:
     if(0 == omp_ncore) {omp_ncore = sysconf( _SC_NPROCESSORS_ONLN );}
     /* oh well, assuming the most CPU s these days have 8 cores */
     if(0 == omp_ncore) {omp_ncore = 8;}
-    std::cout << " Number of threads in OMP set to " << omp_ncore - 3 << std::endl; 
-    omp_set_num_threads(12);
-    //    omp_set_num_threads(1);
+    std::cout << " Number of threads in OMP is automatically set to " << omp_ncore - 3 << std::endl; 
+    omp_set_num_threads(omp_ncore - 3);
   }
   public:
   svm_analyze           ():svm_inter_set(false),filename("svm.root"){ auto_set_core_n();};
@@ -140,6 +139,17 @@ private:
   void Do_probability_calc(){
     given_svm->do_probability_calc();
     given_svm->set_parameters();
+  }
+  void Set_systematical_unc(double sys_unc = 0.25) {
+    given_svm->set_systematical_unc(sys_unc);
+  }
+  void Set_omp_threads(int nthread = 2) {
+    if( sysconf( _SC_NPROCESSORS_ONLN ) < nthread + 1){
+      nthread =  sysconf( _SC_NPROCESSORS_ONLN ) - 3;
+      std::cout << " You do not have that much thread on your machine! Setting the thread number to " << nthread << std::endl; 
+    }
+    omp_set_num_threads(nthread);
+    std::cout << " Number of threads in OMP is manually set to " << nthread << std::endl; 
   }
   void Obtain_probabilities(double C, double g) const{
     given_svm->obtain_probabilities((double)C,(double)g,iEval_bkg);

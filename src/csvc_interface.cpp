@@ -86,7 +86,7 @@ void csvc_interface::obtain_probabilities(double c_p , double g_p, int eval_bkg)
   dist_SV->Write();
   tut->Close();
   /* assume 25% uncertainty */
-  fom FOM (0.25);
+  fom FOM (systematical_unc);
   FOM.maxSignificance(disc_S, disc_B, true, 0., cuteff);
   roc = FOM.ROC(disc_S_roc, disc_B_roc);
   FOM.setSignal    (sig_yield);
@@ -178,7 +178,7 @@ double csvc_interface::parameter_comparison(const vvvector<double>& vSig, const 
   double sig_error = 0., dummy_error = 0., train_accur = 0.;
   int    highest = 0 ,     dummy_bin = 0;
   //assume 25% unc
-  fom    FOM(0.25); //should not be hard coded! 
+  fom    FOM(systematical_unc);
   /*obtaining significance for each value in the gamma array. 
     This can be included inside of the above loop but due to OMP thread exclusivity, it is better to run it outside */
   for(int ind = 0; ind < gamma_array_size; ind++){

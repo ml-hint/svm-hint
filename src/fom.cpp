@@ -66,7 +66,7 @@ double fom::getSignificance(const vector<vector<double> >& sig, const vector<vec
   }    
   this->setSignal(cumuS); this->setBackground(cumuB);
   sign = this->getSignificance(fom::asimov); //AsimovZ is better
-  //cout  cout << " Significance obtained on the bin " << bin + 1 << " is " << sign << "." << endl;
+  cout << " Significance obtained on the bin " << bin + 1 << " is " << sign << "." << endl;
   return sign;
 }
 double fom::maxSignificance(TH1D* sig, TH1D* bkg, bool info, double min_signal, TH1D* cuteff){

@@ -1,4 +1,4 @@
-maketree()
+void maketree()
 {
   //create a Tree file tree1.root
 
@@ -68,7 +68,5 @@ maketree()
     t2.Fill();
   }
   t2.Write();
-
   //  TFile f("svm_testtrain.root","recreate");
-
 }
