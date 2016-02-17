@@ -2,7 +2,7 @@ SVM High Energy Physics Interface - SVM-HINT
 ============================================
 
 The SVM-HINT software package is a LIBSVM based ROOT interface developed for tackling two-class HEP classification problems. The software package provides easy to use, automated methods for SVM hyperparameter optimization by taking Asimov Significance as the performance measure.
-Currently SVM-HINT works with LibSVM v3 [1] and ROOT v5.3-v.6.2 [2] on Scientific Linux distributions [3]. 
+Currently SVM-HINT works with LibSVM v3 [1] and ROOT v5.3 [2] on Scientific Linux distributions [3]. 
 Therefore, a ROOT installation is required.
 An example code is given in the 'svm_hint_tutorial.cpp'. The example code gives a basic usage scenario for the SVM-HINT.
 
