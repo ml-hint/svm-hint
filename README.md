@@ -111,8 +111,9 @@ $ stop.Obtain_probabilities(c_value, gamma_value, estimated_disc_cut_value)
 
 or you can do a grid search using
 
-$ stop.Scan_parameters();
+$ stop.Scan_parameters(output);
 
+where output is a std::vector<int>*, holding the output label values. 
 
  **Short class definitions**
 
