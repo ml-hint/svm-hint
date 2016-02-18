@@ -71,13 +71,16 @@ void csvc_interface::obtain_probabilities(const double c_p , const double g_p, c
   }
   for(int comp = 0; comp < nsamp_eval; comp++){
     svm_predict_probability(csvc_svm_model, sample_eval.x[comp], prob);
-    if(eval_bkg  > comp){
+    if(prob[1] > highest_accur_cut) { 
+      if(output) output    -> push_back(1);
+    } else{ 
       if(output) output    -> push_back(0);
+    }
+    if(eval_bkg  > comp){
       disc_B    -> Fill(prob[1], sample_eval.W[comp]);
       disc_B_roc-> Fill(prob[1], sample_eval.W[comp]);
       if(prob[1] > highest_accur_cut) {bkg_yield += sample_eval.W[comp];}
     } else{
-      if(output) output    -> push_back(1);
       disc_S    -> Fill(prob[1], sample_eval.W[comp]);
       disc_S_roc-> Fill(prob[1], sample_eval.W[comp]);
       if(prob[1] > highest_accur_cut) {sig_yield += sample_eval.W[comp];}
