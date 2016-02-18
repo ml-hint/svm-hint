@@ -83,14 +83,14 @@ double fom::maxSignificance(TH1D* sig, TH1D* bkg, bool info, double min_signal, 
   double intSig = 0., intBkg = 0.;
   int maxBin = 0;
   double given_sig_error = 0.;
-  cout<< " max bin " << max_bin << endl;
+  if(info)  cout<< " max bin " << max_bin << endl;
   for (int ind = min_bin; ind < max_bin+1 ; ind++) {
     intSig = sig->IntegralAndError(ind,  max_bin+1, given_sig_error);
     intBkg = bkg->Integral(ind,  max_bin+1);
     if(intSig - given_sig_error < min_signal) {
       if(info) cout << " integrals sig " << intSig << 
 		 " bkg "                      << intBkg << "    " ;
-      cout << " Cut for the max significance is on bin " << maxBin   << 
+      if(info) cout << " Cut for the max significance is on bin " << maxBin   << 
 	" with significance "                                 << max_sign <<  endl;
       return max_sign;
     }
@@ -99,7 +99,7 @@ double fom::maxSignificance(TH1D* sig, TH1D* bkg, bool info, double min_signal, 
     if(docuteff) cuteff->SetBinContent(ind,sign);
     if(max_sign < sign) {max_sign = sign; maxBin = ind;}
     }
-  cout << " Cut for the max significance is on bin " << maxBin   << 
+  if(info) cout << " Cut for the max significance is on bin " << maxBin   << 
     " with significance "                                 << max_sign << endl;
   return max_sign;
 }
