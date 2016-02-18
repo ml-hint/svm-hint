@@ -88,7 +88,7 @@ public:
   virtual void set_parameters         ()=0;  
   virtual void gen_class_index        ()=0;
   virtual void set_indexes            ()=0;
-  virtual void obtain_probabilities   (double,double,int) = 0;
+  virtual void obtain_probabilities   (const double,const double,const int,std::vector<int>*) = 0;
   virtual void parameter_scan         (double,double) = 0;
   virtual void classify               (const svm_model *, const svm_problem &, vvector<double> &, vvector<double> &, int) = 0;
   virtual double parameter_comparison (const vvvector<double> &,const vvvector<double> &, const vvvector<double> &,const vvvector<double> &, const int, const double, double) = 0;
@@ -128,13 +128,13 @@ private:
   };
   void set_eval(const svm_container &eval, int eval_bkg){
     iEval_bkg = eval_bkg;
-    given_svm->set_sample(eval,svm_interface::EVALUATE);
+    given_svm->set_sample(eval, svm_interface::EVALUATE);
   };
   void set_filename(TString name){filename=name;}
-  void Scan_parameters(){
+  void Scan_parameters(std::vector<int> * output = 0){
     given_svm->parameter_scan(0.0001, 0.); 
     std:: cout << given_svm->highest_accur_C << " "<<given_svm->highest_accur_gamma << std::endl;
-    this->Obtain_probabilities(given_svm->highest_accur_C,given_svm->highest_accur_gamma);
+    this->Obtain_probabilities(given_svm->highest_accur_C, given_svm->highest_accur_gamma, output);
   }
   void Do_probability_calc(){
     given_svm->do_probability_calc();
@@ -151,8 +151,8 @@ private:
     omp_set_num_threads(nthread);
     std::cout << " Number of threads in OMP is manually set to " << nthread << std::endl; 
   }
-  void Obtain_probabilities(double C, double g) const{
-    given_svm->obtain_probabilities((double)C,(double)g,iEval_bkg);
+  void Obtain_probabilities(const double C, const double g, std::vector<int> * output = 0) const{
+    given_svm->obtain_probabilities((double)C,(double)g,iEval_bkg, output);
     TFile *f = new TFile(filename,"RECREATE");
     given_svm->disc_S->Write();
     given_svm->disc_B->Write();
@@ -160,9 +160,9 @@ private:
     given_svm->roc->Write();
     f->Close();
   }
-  void Obtain_probabilities(double C, double g, double high_cut){
+  void Obtain_probabilities(double C, double g, double high_cut, std::vector<int> * output = 0){
     given_svm->highest_accur_cut = high_cut; 
-    Obtain_probabilities((double)C, (double)g);
+    Obtain_probabilities((double)C, (double)g, output);
   }
 };
 #endif

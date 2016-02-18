@@ -36,7 +36,7 @@ private:
   constexpr static double kSig = -1.0;
 public:
   virtual void set_sample          (const svm_container&, samp_type);
-  virtual void obtain_probabilities(double,double,int);
+  virtual void obtain_probabilities(double,double,int,std::vector<int>*);
   csvc_interface                   (unsigned n_tot, unsigned bkg_tot, unsigned sig_tot):svm_interface("c-svc",n_tot,bkg_tot,sig_tot){
     gamma_array_size = 9; /* this number should be an odd number */
     gamma.resize(gamma_array_size);
@@ -136,7 +136,7 @@ public:
   double sum_of_value                      (const svm_problem& tbs, int);//move this to svm_interface
   double sum_of_y_index                    (const svm_problem& tbs, int);//move this to svm_interface
   void get_extrema_features                (const svm_problem &tbs, std::vector<double> & min,  std::vector<double> & max);
-  void scale                               (svm_problem& tbs, const std::vector<double> & min, const  std::vector<double> & max);
+  void scale                               (svm_problem& tbs, const std::vector<double> & min, const std::vector<double> & max, const bool print_out = false);
   virtual void set_parameters() {
     //setting svm model parameters
     parameters_set      = true;

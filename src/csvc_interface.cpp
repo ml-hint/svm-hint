@@ -13,12 +13,12 @@
 #define  fEpsilon 1.e-2
 using std::cout;
 using std::endl;
-void csvc_interface::obtain_probabilities(double c_p , double g_p, int eval_bkg){
-  cout << "Entering the obtain probabilities function... "   << endl;
-  cout << " input variables - C: "  << c_p               << 
-    "  gamma: "                          << g_p               << 
-    "  highest accuracy cut: "           << highest_accur_cut << 
-    "  # of bkg events in eval sample: " << eval_bkg          << endl;
+void csvc_interface::obtain_probabilities(const double c_p , const double g_p, const int eval_bkg, std::vector<int> * output ){
+  cout << "\n Classifying the evaluation sample... " << endl;
+  cout << " input variables - C: "                   << c_p               << 
+    "  gamma: "                                      << g_p               << 
+    "  highest significance cut on probability: "    << highest_accur_cut << 
+    "  # of bkg events in eval sample: "             << eval_bkg          << endl;
   timer deltat;
   disc_S              = new TH1D ("svm_disc_signal"         , "SVM probability signal"     , disc_nbin  , 0., 1.);
   disc_B              = new TH1D ("svm_disc_background"     , "SVM probability background" , disc_nbin  , 0., 1.);
@@ -34,6 +34,7 @@ void csvc_interface::obtain_probabilities(double c_p , double g_p, int eval_bkg)
   disc_B->Sumw2();  
   /* svm prob container */
   double prob[2];
+  bool pre_doprobabilitycalc = doprobabilitycalc ;
   doprobabilitycalc = true;
   set_parameters();
   set_indexes();
@@ -45,7 +46,7 @@ void csvc_interface::obtain_probabilities(double c_p , double g_p, int eval_bkg)
   if(min_features.empty() && max_features.empty()){
     get_extrema_features(sample_train, min_features, max_features);
   }
-  scale(sample_train, min_features, max_features);
+  scale(sample_train, min_features, max_features, true);
   scale(sample_eval,  min_features, max_features);
   //  adjust_weights(sample_train, kBkg, (double)nsig_train/(double)nbkg_train);
   deltat.start();
@@ -71,10 +72,12 @@ void csvc_interface::obtain_probabilities(double c_p , double g_p, int eval_bkg)
   for(int comp = 0; comp < nsamp_eval; comp++){
     svm_predict_probability(csvc_svm_model, sample_eval.x[comp], prob);
     if(eval_bkg  > comp){
+      if(output) output    -> push_back(0);
       disc_B    -> Fill(prob[1], sample_eval.W[comp]);
       disc_B_roc-> Fill(prob[1], sample_eval.W[comp]);
       if(prob[1] > highest_accur_cut) {bkg_yield += sample_eval.W[comp];}
     } else{
+      if(output) output    -> push_back(1);
       disc_S    -> Fill(prob[1], sample_eval.W[comp]);
       disc_S_roc-> Fill(prob[1], sample_eval.W[comp]);
       if(prob[1] > highest_accur_cut) {sig_yield += sample_eval.W[comp];}
@@ -87,13 +90,19 @@ void csvc_interface::obtain_probabilities(double c_p , double g_p, int eval_bkg)
   tut->Close();
   /* assume 25% uncertainty */
   fom FOM (systematical_unc);
-  FOM.maxSignificance(disc_S, disc_B, true, 0., cuteff);
+  if(!pre_doprobabilitycalc){
+    FOM.maxSignificance(disc_S, disc_B, true, 0., cuteff);
+  } else{
+    FOM.maxSignificance(disc_S, disc_B, false, 0., cuteff);
+  } 
   roc = FOM.ROC(disc_S_roc, disc_B_roc);
   FOM.setSignal    (sig_yield);
   FOM.setBackground(bkg_yield);
-  cout << " Significance obtained from the given cut: " << FOM.getSignificance(fom::asimov)                          << 
+  if(pre_doprobabilitycalc){
+    cout << " Significance obtained from the given cut: "    << FOM.getSignificance(fom::asimov)                     << 
     "  signal yield: "                                     << sig_yield                                            << 
     "  background yield: "                                 << bkg_yield                                            << endl; 
+  }
 }
 void csvc_interface::set_gamma_array(std::vector<double> & gamma_arr, unsigned iter){
   int mid = (gamma_arr.size() - 1)/2;
@@ -220,7 +229,7 @@ double csvc_interface::parameter_comparison(const vvvector<double>& vSig, const 
     high_accuracy_settings[3] = gamma[highest];
     highest_accur_gamma       = gamma[highest];
     cout <<" For given C value: "      << std::setprecision(16) << C                        << 
-      "  highest accuracy: "           << std::setprecision(6)  << accuracy->at(highest)    << 
+      "  highest significance: "           << std::setprecision(6)  << accuracy->at(highest)    << 
       "  obtained with gamma: "        << std::setprecision(16) << gamma [highest]          << 
       "  on the bin "                  << std::setprecision(6)  << max_cut_bin->at(highest) << 
       "  in the iteration "            << iteration             << endl;
@@ -251,20 +260,20 @@ bool csvc_interface::parameter_decision()   {
     if (highest_accur_C > C_cut && highest_accur_C / above_cut_inc > C_cut){
       above_cut_inc -= (above_cut_inc - 1.) * 4. / 5.;
       below_cut_inc -= (below_cut_inc - 1.) * 4. / 5.;
-      cout << " entering precise scan with initial C " << highest_accur_C / (above_cut_inc * above_cut_inc) << " and previous accuracy " << it_max->at(0) << endl;
+      cout << " entering precise scan with initial C " << highest_accur_C / (above_cut_inc * above_cut_inc) << " and previous signifincance " << it_max->at(0) << endl;
       this->parameter_scan(highest_accur_C - 2. * above_cut_inc , it_max->at(0));
     } else {
       above_cut_inc -= (above_cut_inc - 1.) * 4. / 5.;
       below_cut_inc -= (below_cut_inc - 1.) * 4. / 5.;
-      cout << " entering precise scan with initial C " << highest_accur_C / (below_cut_inc * below_cut_inc) << " and previous accuracy " << it_max->at(0) << endl;
+      cout << " entering precise scan with initial C " << highest_accur_C / (below_cut_inc * below_cut_inc) << " and previous significance " << it_max->at(0) << endl;
       this->parameter_scan(highest_accur_C / (below_cut_inc * below_cut_inc) , it_max->at(0));
     }
   } else {
-    cout << " Optimized C "      << std::setprecision(16) << std::fixed << highest_accur_C      << 
+    cout << "\n Optimized C "         << std::setprecision(16) << std::fixed << highest_accur_C      << 
       " optimized gamma "             << std::setprecision(16) << std::fixed << highest_accur_gamma  << 
       " optimized discriminator cut " << std::setprecision(4)  << std::fixed << highest_accur_cut    << 
-      " with the accuracy of "        << std::setprecision(4)  << std::fixed << it_max->at(0)        << 
-      " in the test sample "          << std::setprecision(12) << endl;
+      " with the significance of "    << std::setprecision(4)  << std::fixed << it_max->at(0)        << 
+      " in the test sample \n "       << std::setprecision(12) << endl;
     clean(para_scan_problem_test);
     clean(para_scan_problem_train);
     return true;
@@ -349,10 +358,10 @@ void csvc_interface::get_extrema_features (const svm_problem &tbs, std::vector<d
     }
   }
 }
-void csvc_interface::scale                (svm_problem &tbs, const std::vector<double> & min, const std::vector<double> & max){
-  cout << " Entering scale function: " << endl;
+void csvc_interface::scale                (svm_problem &tbs, const std::vector<double> & min, const std::vector<double> & max, const bool print_out){
+  if(print_out) cout << " Entering scale function: " << endl;
   for (unsigned feat = 0; feat < nfeature; feat++) {
-    cout << " feature: " << feat + 1 << " min: " << min.at(feat) << "  max: " << max.at(feat) << endl; 
+    if(print_out) cout << " feature: " << feat + 1 << " min: " << min.at(feat) << "  max: " << max.at(feat) << endl; 
   }
   for(unsigned ind = 0; ind < tbs.l; ind++) {
     for( unsigned feat = 0; feat < nfeature; feat++) {

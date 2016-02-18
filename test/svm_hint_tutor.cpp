@@ -89,6 +89,7 @@ int main(){
   size_t nsamp_tot = svm.svm_cont->size();
   size_t nsig_tot  = nsamp_tot - nbkg_tot;
   size_t neval_tot = svm_eval.svm_cont->size();
+  std::vector<int> * output = new vector<int>;
   std::cout << " Total event number in the svm container: " << svm.svm_cont->size()      << 
     " total event number in the svm evaluation container: " << svm_eval.svm_cont->size() << std::endl;
   svm_interface * csvc = new csvc_interface(nsamp_tot,nbkg_tot,nsig_tot);
@@ -97,18 +98,25 @@ int main(){
   stop.set_svm_interface(csvc);
   stop.setup_svm(svm);
   stop.set_eval(svm_eval,nbkg_eval);
-  /* timer prob;
-   stop.Obtain_probabilities(1, 1000.,0.575);// c , gamma
-   prob.stop("svm training and test takes: ");*/
+
   //Enable probabilistic output
   stop.Do_probability_calc();
   //set the systematical unc
   stop.Set_systematical_unc(0.25);
   //set # of threads
-  stop.Set_omp_threads(8);
+  stop.Set_omp_threads(12);
+
+  /*  timer prob;
+  stop.Obtain_probabilities(1, 1000.,0.575, output);// c , gamma
+  prob.stop("svm training and test takes: ");*/
   timer tmain; 
   tmain.start();
-  stop.Scan_parameters();
+  stop.Scan_parameters(output);
   tmain.stop("scanning parameters takes: ");
+  /*
+    for(auto it =output->begin(); it!=output->end(); it++){
+    std::cout << (*it) << " ";
+    } 
+  */
   return 0;
 }
