@@ -12,7 +12,9 @@
 #include <TH1D.h>
 #include <TFile.h>
 #include <TGraph.h>
+#if OMP_ENABLE == 1
 #include <omp.h>
+#endif
 #include <thread>
 #include "fom.h"
 template<typename T >  using vvector  = std::vector<std::vector<T> >;
@@ -102,6 +104,7 @@ private:
   int iEval_bkg;
   TString filename;
   void auto_set_core_n(){
+#if OMP_ENABLE == 1
     static unsigned int omp_ncore;
     omp_ncore = std::thread::hardware_concurrency();
     if(0 == omp_ncore) {omp_ncore = sysconf( _SC_NPROCESSORS_ONLN );}
@@ -109,6 +112,7 @@ private:
     if(0 == omp_ncore) {omp_ncore = 8;}
     std::cout << " Number of threads in OMP is automatically set to " << omp_ncore - 3 << std::endl; 
     omp_set_num_threads(omp_ncore - 3);
+#endif
   }
   public:
   svm_analyze           ():svm_inter_set(false),filename("svm.root"){ auto_set_core_n();};
@@ -144,12 +148,14 @@ private:
     given_svm->set_systematical_unc(sys_unc);
   }
   void Set_omp_threads(int nthread = 2) {
+#if OMP_ENABLE == 1
     if( sysconf( _SC_NPROCESSORS_ONLN ) < nthread + 1){
       nthread =  sysconf( _SC_NPROCESSORS_ONLN ) - 3;
       std::cout << " You do not have that much thread on your machine! Setting the thread number to " << nthread << std::endl; 
     }
     omp_set_num_threads(nthread);
     std::cout << " Number of threads in OMP is manually set to " << nthread << std::endl; 
+#endif
   }
   void Obtain_probabilities(const double C, const double g, std::vector<int> * output = 0) const{
     given_svm->obtain_probabilities((double)C,(double)g,iEval_bkg, output);

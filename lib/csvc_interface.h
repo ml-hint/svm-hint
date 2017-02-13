@@ -13,7 +13,9 @@
 #include <TH1D.h>
 #include <TFile.h>
 #include <TGraph.h>
+#if OMP_ENABLE == 1
 #include <omp.h>
+#endif
 #include <thread>
 #include "fom.h"
 //c-svc

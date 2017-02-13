@@ -3,6 +3,8 @@ CC = icpc
 SHVER = 2
 OS = $(shell uname)
 
+export OMP_ENABLE:=0
+
 LIBSVM_DIR = ./libsvm-weights-3.20/
 
 SVMHINT_SRC = ./src/
@@ -13,7 +15,11 @@ $(error ROOTSYS is not defined!)
 endif
 
 ROOT_LIBS = `root-config --libs` -lGenVector -lMathMore -lMinuit2
-CXX_FLAGS =  -O3 -fPIC -fopenmp -std=c++0x `root-config --cflags`
+ifeq ($(OMP_ENABLE),1)
+	CXX_FLAGS =  -O3 -fPIC -fopenmp -std=c++0x `root-config --cflags`
+else
+	CXX_FLAGS =  -O3 -fPIC -std=c++0x `root-config --cflags`
+endif
 INCS = -I/usr/include -I${ROOTSYS}/include -I$(LIBSVM_DIR) -I$(SVMHINT_LIB) -L/usr/lib64 -lz -lCore
 
 
@@ -30,11 +36,11 @@ lib: svm.o
 
 svm.o:$(LIBSVM_DIR)/svm.cpp $(LIBSVM_DIR)/svm.h
 	@echo "Compiling LIBSVM..." 	
-	$(CXX) $(CXX_FLAGS) -c  $(LIBSVM_DIR)/svm.cpp
+	$(CXX) $(CXX_FLAGS) -c  $(LIBSVM_DIR)/svm.cpp -D"OMP_ENABLE=${OMP_ENABLE}"
 	@echo "Done." 	
-tutorial:$(SVMHINT_TEST)/svm_hint_tutor.cpp $(SVMHINT_SRC)/fom.cpp $(SVMHINT_LIB)/fom.h $(SVMHINT_LIB)/libsvm_container.h  $(SVMHINT_LIB)/svm_hint.h $(SVMHINT_LIB)/csvc_interface.h svm.o
+tutorial:$(SVMHINT_TEST)/svm_hint_tutor.cpp  $(SVMHINT_SRC)/fom.cpp $(SVMHINT_LIB)/fom.h $(SVMHINT_LIB)/libsvm_container.h  $(SVMHINT_LIB)/svm_hint.h $(SVMHINT_LIB)/csvc_interface.h svm.o 
 	@echo "Compiling $@..." 	
-	$(CXX) $(CXX_FLAGS) $(SVMHINT_TEST)/svm_hint_tutor.cpp svm.o $(SVMHINT_SRC)/fom.cpp $(SVMHINT_SRC)/csvc_interface.cpp $(INCS) $(ROOT_LIBS) -o tutor_svm -lm 
+	$(CXX) $(CXX_FLAGS) $(SVMHINT_TEST)/svm_hint_tutor.cpp svm.o $(SVMHINT_SRC)/fom.cpp  -D"OMP_ENABLE=${OMP_ENABLE}" $(SVMHINT_SRC)/user_csvc_interface.cpp  $(SVMHINT_SRC)/csvc_interface.cpp $(INCS) $(ROOT_LIBS) -o tutor_svm -lm  
 	@echo "Done." 		
 asimov: $(SVMHINT_TEST)asimov.cpp $(SVMHINT_SRC)\fom.cpp $(SVMHINT_LIB)\fom.h 
 	@echo "Compiling $@..." 	
