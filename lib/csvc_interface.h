@@ -16,9 +16,11 @@
 #if OMP_ENABLE == 1
 #include <omp.h>
 #endif
+#include "csvc_constants.h"
 #include <thread>
 #include "fom.h"
 //c-svc
+using namespace csvc_constants;
 class csvc_interface:public svm_interface {
 private:
   void set_gamma_array               (std::vector<double, std::allocator<double> >&, unsigned int);
@@ -34,8 +36,6 @@ private:
   int gamma_array_size; /* this number should be an odd number */
   std::vector<double>* accuracy;
   std::vector<int   >* max_cut_bin;
-  constexpr static double kBkg = 1.0;
-  constexpr static double kSig = -1.0;
 public:
   virtual void set_sample          (const svm_container&, samp_type);
   virtual void obtain_probabilities(double,double,int,std::vector<int>*);
@@ -162,7 +162,9 @@ public:
     for(unsigned indx = 0; indx < nsamp_test;  indx++) { free(sample_test.x[indx]);}
     free(sample_test.x);
     free(y_array);
-    delete y, y1, y2;
+    if(y ) {delete(y) ;}
+    if(y1) {delete(y1);}
+    if(y2) {delete(y2);}
   }
   void clean(svm_problem& tbc);
 };

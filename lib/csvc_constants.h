@@ -6,4 +6,6 @@ namespace csvc_constants {
   int    const iPrecisionV = 16; /* Floating point display precision Verbose */
   int    const iPrecisionC = 6; /*Floating point display precision Coarse */
   int    const iPreciseScanSteps = 5; /* Odd number */
+  double const kBkg = 1.0;
+  double const kSig = -1.0;
 };

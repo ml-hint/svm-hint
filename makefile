@@ -16,11 +16,19 @@ endif
 
 ROOT_LIBS = `root-config --libs` -lGenVector -lMathMore -lMinuit2
 ifeq ($(OMP_ENABLE),1)
-	CXX_FLAGS =  -O3 -fPIC -fopenmp -std=c++0x `root-config --cflags`
+	CXX_FLAGS =  -O3 -fPIC -fopenmp `root-config --cflags`
 else
-	CXX_FLAGS =  -O3 -fPIC -std=c++0x `root-config --cflags`
+	CXX_FLAGS =  -O3 -fPIC `root-config --cflags`
 endif
-INCS = -I/usr/include -I${ROOTSYS}/include -I$(LIBSVM_DIR) -I$(SVMHINT_LIB) -L/usr/lib64 -lz -lCore
+
+
+ifeq ("$(OS)","Darwin")
+	CXX_FLAGS += -std=c++14
+	INCS = -I/usr/include -I${ROOTSYS}/include -I$(LIBSVM_DIR) -I$(SVMHINT_LIB) -lz -lCore
+else
+	CXX_FLAGS += -std=c++0x
+	INCS = -I/usr/include -I${ROOTSYS}/include -I$(LIBSVM_DIR) -I$(SVMHINT_LIB) -L/usr/lib64 -lz -lCore		
+endif
 
 
 SVMHINT_TEST = ./test/
