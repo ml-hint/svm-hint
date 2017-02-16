@@ -10,8 +10,8 @@
 #include <unistd.h>
 #include "TString.h"
 #include "timer.h"
-#include "csvc_constants.h"
-using namespace csvc_constants;
+//#include "csvc_constants.h"
+//using namespace csvc_constants;
 using std::cout;
 using std::endl;
 void csvc_interface::set_gamma_array(std::vector<double> & gamma_arr, unsigned iter){
@@ -115,7 +115,7 @@ double csvc_interface::parameter_comparison(const vvvector<double>& vSig, const 
     }
     accuracy->at(ind) *= (1. - fabs(accuracy->at(ind) - train_accur)/(accuracy->at(ind) + train_accur));
   }
-  sig_error;
+  //  sig_error;
   for(int ind = 0; ind<gamma_array_size-1; ind++){
     if( accuracy->at(ind) > accuracy->at(ind+1) || ( accuracy->at(ind) == accuracy->at(ind+1) && max_cut_bin->at(ind) < max_cut_bin->at(ind+1) ) ) {
       accuracy->at(ind+1)    = accuracy->at(ind); 
@@ -153,8 +153,8 @@ double csvc_interface::parameter_comparison(const vvvector<double>& vSig, const 
   } else {
     if(precise_scan) max_iter = iteration + iPreciseScanSteps;
     parameter_decision();
-    return 1.;
   }
+  return 1.;
 }
 bool csvc_interface::parameter_decision()   {
   int max_ind = 0; 
@@ -188,6 +188,7 @@ bool csvc_interface::parameter_decision()   {
     clean(para_scan_problem_train);
     return true;
   }
+  return false;
 } 
 void csvc_interface::clean(svm_problem& tbc){
   free(tbc.W);

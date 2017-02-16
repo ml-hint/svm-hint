@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <vector>
 #include <iterator>
+#include <numeric> 
 #include <algorithm>
 using namespace std;
 void fom::asimovZ(){
@@ -193,7 +194,7 @@ double fom::maxSignificance(const vector<vector<double> >& sig, const vector<vec
 double fom::unbinned_maxSignificance (const std::vector<std::vector<double> >& sig, const std::vector<std::vector<double> >& bkg, int &bin, double &error, bool info, double min_signal, TH1D* cuteff){
   // some little code to sort over 2 vectors
   vector<unsigned> Idx(sig.size()+bkg.size());
-  iota( Idx.begin(), Idx.end(), 0 );// 0...nsig-1,nsig,nsig+1,...,nsig+nbkg
+  std::iota( Idx.begin(), Idx.end(), 0 );// 0...nsig-1,nsig,nsig+1,...,nsig+nbkg
   // admittedly unreadable - sort index such that (Idx[i]<sig.size()?sig[Idx[i]][0]:bkg[Idx[i]-sig.size()][0]) is decreasing
   sort(Idx.begin(), Idx.end(), [&sig,&bkg](size_t i1, size_t i2){
       return (i1<sig.size()?sig[i1][0]:bkg[i1-sig.size()][0])>(i2<sig.size()?sig[i2][0]:bkg[i2-sig.size()][0]);
