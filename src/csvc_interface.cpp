@@ -315,6 +315,7 @@ bool csvc_interface::split_set_sample (const svm_container & svm){
     } else {
       if(1 == indx%2) {
 	nsig_test_w += svm.weights->at(indx);
+	//	if(svm.weights->at(indx) > 0.01)std::cout << svm.weights->at(indx) << std::endl;
 	sample_test.x[indtest] = (svm_node*) calloc(svm.svm_cont->at(0).size(), sizeof(svm_node));
 	sample_test.W[indtest] = svm.weights->at(indx);
 	for(unsigned indy = 0; indy <svm.svm_cont->at(indx).size(); indy ++) {
