@@ -16,7 +16,7 @@ SVM-HINT's performance and usage scenarios are discussed in [4].
 
 [3] https://www.scientificlinux.org
 
-[4] http://arxiv.org/pdf/1601.02809v2.pdf
+[4] https://doi.org/10.1016/j.nima.2016.09.017
 
 **Installation:**
 Make sure that the ROOT path is set correctly:
